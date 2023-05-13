@@ -15,6 +15,9 @@ spec:
       containers:
       - name: alon-bot-python
         image: kubealon/alon-bot-python:latest
+        resources:
+          requests:
+            cpu: 100m
         ports:
         - containerPort: 8080
         volumeMounts:
