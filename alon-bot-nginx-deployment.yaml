@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alon-bot-nginx
+spec:
+  selector:
+    matchLabels:
+      app: alon-bot-nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: alon-bot-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: kubealon/alon-bot-nginx
+        ports:
+        - containerPort: 80

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alon-bot-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alon-bot-python
+  template:
+    metadata:
+      labels:
+        app: alon-bot-python
+    spec:
+      containers:
+      - name: alon-bot-python
+        image: kubealon/alon-bot-python:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: alon-bot-data
+          mountPath: /data
+      volumes:
+      - name: alon-bot-data
+        persistentVolumeClaim:
+          claimName: alon-bot-pvc
