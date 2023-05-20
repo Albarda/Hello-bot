@@ -7,6 +7,9 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
     }
+
+
+    stages {
     stage('Checkout') {
         steps {
             checkout scm
@@ -19,7 +22,6 @@ pipeline {
     }
 }
 
-    stages {
         stage('Build') {
             options {
                 timeout(time: 10, unit: 'MINUTES')
