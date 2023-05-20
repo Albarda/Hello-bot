@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: alon-bot-pod
   labels:
-    some-label: some-label-value
+    alon-bot-pod: "true"
 spec:
   containers:
   - name: jnlp
