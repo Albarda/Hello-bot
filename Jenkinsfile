@@ -1,30 +1,5 @@
 pipeline {
-    agent {
-        kubernetes {
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    some-label: some-label-value
-spec:
-  containers:
-  - name: docker
-    image: docker:dind
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-      - name: docker-sock
-        mountPath: /var/run/docker.sock
-  volumes:
-    - name: docker-sock
-      hostPath:
-        path: /var/run/docker.sock
-        type: Socket
-"""
-        }
-    }
+    agent any
 
     options {
         skipDefaultCheckout(true)
@@ -46,6 +21,8 @@ spec:
                         usernameVariable: 'user'
                     ),
                 ]) {
+                    sh 'minikube start'
+                    sh 'eval $(minikube -p minikube docker-env)'
                     sh """
                         docker build -t kubealon/alon-bot-python-${env.BUILD_NUMBER} .
                     """
@@ -53,40 +30,20 @@ spec:
                         docker build -t kubealon/alon-bot-nginx-${env.BUILD_NUMBER} .
                     """
                 }
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub-cred',
-                        passwordVariable: 'DOCKERHUB_PASSWORD',
-                        usernameVariable: 'DOCKERHUB_USERNAME'
-                    )
-                ]) {
-                    sh """
-                        echo $DOCKERHUB_PASSWORD | docker login \
-                            --username $DOCKERHUB_USERNAME \
-                            --password-stdin
-                    """
-                    sh """
-                        docker push kubealon/alon-bot-python-${env.BUILD_NUMBER}
-                    """
-                    sh """
-                        docker push kubealon/alon-bot-nginx-${env.BUILD_NUMBER}
-                    """
-                }
             }
         }
-        stage('Deploy to Kubernetes') {
+        stage('Deploy to Minikube') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG')]) {
-                        sh 'kubectl apply -f alon-bot-python-deployment.yaml'
-                        sh 'kubectl apply -f alon-bot-python-service.yaml'
-                        sh 'kubectl apply -f alon-bot-python-hpa.yaml'
-                        sh 'kubectl apply -f alon-bot-release-pvc.yaml'
-                        sh 'kubectl apply -f alon-bot-nginx-deployment.yaml'
-                        sh 'kubectl apply -f alon-bot-nginx-service.yaml'
-                        sh 'kubectl apply -f alon-bot-pvc.yaml'
-                        sh 'kubectl apply -f alon-bot-ingress.yaml'
-                    }
+                    sh 'kubectl config use-context minikube'
+                    sh 'kubectl apply -f alon-bot-python-deployment.yaml'
+                    sh 'kubectl apply -f alon-bot-python-service.yaml'
+                    sh 'kubectl apply -f alon-bot-python-hpa.yaml'
+                    sh 'kubectl apply -f alon-bot-release-pvc.yaml'
+                    sh 'kubectl apply -f alon-bot-nginx-deployment.yaml'
+                    sh 'kubectl apply -f alon-bot-nginx-service.yaml'
+                    sh 'kubectl apply -f alon-bot-pvc.yaml'
+                    sh 'kubectl apply -f alon-bot-ingress.yaml'
                 }
             }
         }
@@ -95,6 +52,7 @@ spec:
         always {
             // Cleanup Docker images from the disk
             sh 'docker system prune -af'
+            sh 'minikube stop'
         }
     }
 }
