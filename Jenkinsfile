@@ -7,6 +7,17 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
     }
+    stage('Checkout') {
+        steps {
+            checkout scm
+    }
+}
+    stage('Preparation') {
+        steps {
+            cleanWs()
+            checkout scm
+    }
+}
 
     stages {
         stage('Build') {
