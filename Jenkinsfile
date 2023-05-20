@@ -67,7 +67,7 @@ pipeline {
         always {
             // Cleanup Docker images from the disk
             sh 'docker system prune -af'
-            sh 'minikube stop'
+           // sh 'minikube stop'
         }
     }
 }
