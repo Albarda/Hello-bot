@@ -21,6 +21,8 @@ pipeline {
                         usernameVariable: 'user'
                     ),
                 ]) {
+                    sh 'pwd' // print current directory
+                    sh 'ls -la' // list all files in the current directory
                     sh 'minikube start'
                     sh 'eval $(minikube -p minikube docker-env)'
                     sh """
