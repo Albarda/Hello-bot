@@ -2,7 +2,7 @@ pipeline {
     agent {
         kubernetes {
             label 'jenkins'
-            image 'jenkins/jenkins:latest'
+            //image 'jenkins/jenkins:latest'
             serviceAccount 'default'
            //label 'alon-bot-pod'
            //defaultContainer 'jnlp'
