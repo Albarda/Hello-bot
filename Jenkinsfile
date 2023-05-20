@@ -1,8 +1,28 @@
 pipeline {
     agent {
-        docker {
-            image 'kubealon/private-course:jenkins-agent'
-            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+        kubernetes {
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    some-label: some-label-value
+spec:
+  containers:
+  - name: docker
+    image: docker:dind
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+      - name: docker-sock
+        mountPath: /var/run/docker.sock
+  volumes:
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock
+        type: Socket
+"""
         }
     }
 
