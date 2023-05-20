@@ -1,69 +1,80 @@
 pipeline {
     agent {
-        kubernetes {
-            yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: jnlp
-    image: jenkins/jnlp-slave:latest
-    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-    volumeMounts:
-    - mountPath: /home/jenkins
-      name: workspace-volume
-  - name: docker
-    image: docker:latest
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - mountPath: /var/run/docker.sock
-      name: docker-socket
-  volumes:
-  - name: docker-socket
-    hostPath:
-      path: /var/run/docker.sock
-  - name: workspace-volume
-    emptyDir: {}
-"""
+        docker {
+            image 'kubealon/private-course:jenkins-agent'
+            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
+
+    options {
+        skipDefaultCheckout(true)
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
+    }
+
     stages {
         stage('Build') {
-            steps {
-                sh 'docker build -t alon-bot:latest .'
+            options {
+                timeout(time: 10, unit: 'MINUTES')
             }
-        }
-        stage('Push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-                    sh 'docker tag alon-bot:latest kubealon/alon-bot:latest'
-                    sh 'docker push kubealon/alon-bot:latest'
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'Github-cred',
+                        passwordVariable: 'pass',
+                        usernameVariable: 'user'
+                    ),
+                ]) {
+                    sh """
+                        docker build -t kubealon/alon-bot-python-${env.BUILD_NUMBER} .
+                    """
+                    sh """
+                        docker build -t kubealon/alon-bot-nginx-${env.BUILD_NUMBER} .
+                    """
+                }
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-cred',
+                        passwordVariable: 'DOCKERHUB_PASSWORD',
+                        usernameVariable: 'DOCKERHUB_USERNAME'
+                    )
+                ]) {
+                    sh """
+                        echo $DOCKERHUB_PASSWORD | docker login \
+                            --username $DOCKERHUB_USERNAME \
+                            --password-stdin
+                    """
+                    sh """
+                        docker push kubealon/alon-bot-python-${env.BUILD_NUMBER}
+                    """
+                    sh """
+                        docker push kubealon/alon-bot-nginx-${env.BUILD_NUMBER}
+                    """
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([string(credentialsId: 'kubectl-credentials', variable: 'KUBECONFIG_CA')]) {
-                    sh '''
-                    export KUBECONFIG=~/.kube/config
-                    kubectl config use-context my-context
-                    kubectl config set-credentials jenkins --certificate=$KUBECONFIG_CA
-                    kubectl config set-context --current --namespace=jenkins
-
-                    kubectl apply -f Hello-bot/alon-bot-python-deployment.yaml
-                    kubectl apply -f Hello-bot/alon-bot-python-service.yaml
-                    kubectl apply -f Hello-bot/alon-bot-hpa.yaml
-                    kubectl apply -f Hello-bot/alon-bot-pvc.yaml
-
-                    kubectl apply -f Hello-bot/alon-bot-nginx-deployment.yaml
-                    kubectl apply -f Hello-bot/alon-bot-nginx-service.yaml
-                    kubectl apply -f Hello-bot/alon-bot-ingress.yaml
-                    '''
+                script {
+                    withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG')]) {
+                        sh 'kubectl apply -f alon-bot-python-deployment.yaml'
+                        sh 'kubectl apply -f alon-bot-python-service.yaml'
+                        sh 'kubectl apply -f alon-bot-python-hpa.yaml'
+                        sh 'kubectl apply -f alon-bot-release-pvc.yaml'
+                        sh 'kubectl apply -f alon-bot-nginx-deployment.yaml'
+                        sh 'kubectl apply -f alon-bot-nginx-service.yaml'
+                        sh 'kubectl apply -f alon-bot-pvc.yaml'
+                        sh 'kubectl apply -f alon-bot-ingress.yaml'
+                    }
                 }
             }
+        }
+    }
+    post {
+        always {
+            // Cleanup Docker images from the disk
+            sh 'docker system prune -af'
         }
     }
 }
