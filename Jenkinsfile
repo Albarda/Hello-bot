@@ -24,10 +24,10 @@ pipeline {
                     sh 'minikube start'
                     sh 'eval $(minikube -p minikube docker-env)'
                     sh """
-                        docker build -t kubealon/alon-bot-python-${env.BUILD_NUMBER} .
+                        docker build -t -f Dockerfile kubealon/alon-bot-python-${env.BUILD_NUMBER} .
                     """
                     sh """
-                        docker build -t kubealon/alon-bot-nginx-${env.BUILD_NUMBER} .
+                        docker build -t -f Dockerfile-nginx kubealon/alon-bot-nginx-${env.BUILD_NUMBER} .
                     """
                 }
             }
