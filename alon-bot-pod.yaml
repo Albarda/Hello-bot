@@ -4,6 +4,7 @@ metadata:
   name: alon-bot-pod
   labels:
     alon-bot-pod: "true"
+    some-label: some-label-value
 spec:
   containers:
   - name: jnlp
