@@ -1,9 +1,9 @@
 pipeline {
     agent {
         kubernetes {
-           // label 'alon-bot-pod'
-           // defaultContainer 'jnlp'
-           // yamlFile '/home/ec2-user/Hello-bot/alon-bot-pod.yaml' // Replace this with the path to your pod YAML file
+           label 'alon-bot-pod'
+           defaultContainer 'jnlp'
+           yamlFile '/home/ec2-user/Hello-bot/alon-bot-pod.yaml' // Replace this with the path to your pod YAML file
         }
     }
 
