@@ -8,6 +8,7 @@ pipeline {
           containers:
           - name: jnlp
             image: bitnami/jenkins-agent:latest
+            namespace: jenkins
             tty: true
             command:
             - "/bin/sh"
