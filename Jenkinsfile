@@ -1,7 +1,5 @@
 pipeline {
-    agent
-        any
-
+    agent any // correct agent definition
 
     options {
         skipDefaultCheckout(true)
@@ -10,19 +8,19 @@ pipeline {
         disableConcurrentBuilds()
     }
 
-
     stages {
-    stage('Checkout') {
-        steps {
-            checkout scm
-    }
-}
-    stage('Preparation') {
-        steps {
-            cleanWs()
-            checkout scm
-    }
-}
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Preparation') {
+            steps {
+                cleanWs()
+                checkout scm
+            }
+        }
 
         stage('Build') {
             options {
@@ -36,8 +34,8 @@ pipeline {
                         usernameVariable: 'user'
                     ),
                 ]) {
-                    sh 'pwd' // print current directory
-                    sh 'ls -la' // list all files in the current directory
+                    sh 'pwd'
+                    sh 'ls -la'
                     sh 'minikube start'
                     sh 'eval $(minikube -p minikube docker-env)'
                     sh """
@@ -49,6 +47,7 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy to Minikube') {
             steps {
                 script {
@@ -65,11 +64,11 @@ pipeline {
             }
         }
     }
+
     post {
         always {
-            // Cleanup Docker images from the disk
             sh 'docker system prune -af'
-           // sh 'minikube stop'
+            sh 'minikube stop'
         }
     }
 }
