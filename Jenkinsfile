@@ -9,9 +9,16 @@ pipeline {
           - name: jenkins-agent
             image: bitnami/jenkins-agent:latest
             tty: true
+            command:
+            - /bin/sh
+            args:
+            - -c
+            - while true; do echo "jenkins-agent running..."; sleep 30; done
         '''
         }
     }
+    ...
+}
     options {
         skipDefaultCheckout(true)
         timestamps()
