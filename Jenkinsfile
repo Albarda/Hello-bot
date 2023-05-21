@@ -64,10 +64,10 @@ pipeline {
 
 
                     sh """
-                        docker push kubealon/alon-bot-python-${env.BUILD_NUMBER} .
+                        docker push kubealon/alon-bot-python-${env.BUILD_NUMBER}
                     """
                     sh """
-                        docker push kubealon/alon-bot-nginx-${env.BUILD_NUMBER} .
+                        docker push kubealon/alon-bot-nginx-${env.BUILD_NUMBER}
                     """
                 }
             }
