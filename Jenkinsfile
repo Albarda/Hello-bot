@@ -9,6 +9,7 @@ pipeline {
           - name: jenkins-agent
             image: bitnami/jenkins-agent:latest
             command:
+            - /bin/bash
             tty: true
         '''
         }
