@@ -10,15 +10,13 @@ pipeline {
             image: bitnami/jenkins-agent:latest
             tty: true
             command:
-            - /bin/sh
+            - "/bin/sh"
             args:
-            - -c
-            - while true; do echo "jenkins-agent running..."; sleep 30; done
+            - "-c"
+            - "while true; do echo 'jenkins-agent running...'; sleep 30; done"
         '''
         }
     }
-
-}
     options {
         skipDefaultCheckout(true)
         timestamps()
@@ -33,7 +31,6 @@ pipeline {
             }
         }
 
-
         stage('Build') {
             options {
                 timeout(time: 10, unit: 'MINUTES')
@@ -46,8 +43,6 @@ pipeline {
                         usernameVariable: 'user'
                     ),
                 ]) {
-                   // sh 'pwd'
-                  //  sh 'ls -la'
                     sh 'minikube start'
                     sh 'eval $(minikube -p minikube docker-env)'
                     sh """
@@ -60,8 +55,7 @@ pipeline {
             }
         }
 
-
-         stage('push') {
+        stage('push') {
             options {
                 timeout(time: 10, unit: 'MINUTES')
             }
@@ -73,8 +67,6 @@ pipeline {
                         usernameVariable: 'dockerUser'
                     ),
                 ]) {
-
-
                     sh """
                         docker push kubealon/alon-bot-python:${env.BUILD_NUMBER}
                     """
