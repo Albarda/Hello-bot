@@ -6,7 +6,7 @@ pipeline {
         kind: Pod
         spec:
           containers:
-          - name: jnlp
+          - name: jenkins-agent
             image: bitnami/jenkins-agent:latest
             namespace: jenkins
             tty: true
