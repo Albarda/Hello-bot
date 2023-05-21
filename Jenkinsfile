@@ -17,7 +17,7 @@ pipeline {
         '''
         }
     }
-    ...
+
 }
     options {
         skipDefaultCheckout(true)
