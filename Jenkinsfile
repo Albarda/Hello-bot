@@ -103,9 +103,12 @@ pipeline {
     }
 
     post {
-        always {
+    always {
+        node {
             sh 'docker system prune -af'
             sh 'minikube stop'
         }
     }
 }
+
+        }}
