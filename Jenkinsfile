@@ -7,7 +7,7 @@ pipeline {
         spec:
           containers:
           - name: jenkins-agent
-            image: jenkins-agent:latest
+            image: bitnami/jenkins-agent:latest
             command:
             tty: true
         '''
