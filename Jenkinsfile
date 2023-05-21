@@ -1,18 +1,19 @@
 pipeline {
     agent {
-    kubernetes {
-      yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: jenkins-agent
-            image: jenkins-agent:latest
-            command:
-            - cat
-            tty: true
-        '''
-    }
+        any
+    //kubernetes {
+     // yaml '''
+      //  apiVersion: v1
+       // kind: Pod
+       // spec:
+        //  containers:
+        //  - name: jenkins-agent
+        //    image: jenkins-agent:latest
+        //    command:
+        //    - cat
+         //   tty: true
+       // '''
+   // }
     }
 
     options {
