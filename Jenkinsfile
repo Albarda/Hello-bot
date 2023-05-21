@@ -7,6 +7,7 @@ pipeline {
         spec:
           containers:
           - name: jenkins-agent
+            value: "http://54.195.163.130:8080/"
             image: bitnami/jenkins-agent:latest
             command:
             - cat
