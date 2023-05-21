@@ -34,8 +34,8 @@ pipeline {
                         usernameVariable: 'user'
                     ),
                 ]) {
-                    sh 'pwd'
-                    sh 'ls -la'
+                   // sh 'pwd'
+                  //  sh 'ls -la'
                     sh 'minikube start'
                     sh 'eval $(minikube -p minikube docker-env)'
                     sh """
@@ -43,6 +43,31 @@ pipeline {
                     """
                     sh """
                         docker build -f Dockerfile-nginx -t kubealon/alon-bot-nginx-${env.BUILD_NUMBER} .
+                    """
+                }
+            }
+        }
+
+
+         stage('push') {
+            options {
+                timeout(time: 10, unit: 'MINUTES')
+            }
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-cred',
+                        passwordVariable: 'dockerPass',
+                        usernameVariable: 'dockerUser'
+                    ),
+                ]) {
+
+
+                    sh """
+                        docker push kubealon/alon-bot-python-${env.BUILD_NUMBER} .
+                    """
+                    sh """
+                        docker push kubealon/alon-bot-nginx-${env.BUILD_NUMBER} .
                     """
                 }
             }
