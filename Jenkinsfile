@@ -1,5 +1,5 @@
 pipeline {
-    agent {
+    agent //{
         any
     //kubernetes {
      // yaml '''
@@ -14,7 +14,7 @@ pipeline {
          //   tty: true
        // '''
    // }
-    }
+   // }
 
     options {
         skipDefaultCheckout(true)
