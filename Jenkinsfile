@@ -1,16 +1,15 @@
 pipeline {
     agent {
-    kubernetes {
-      yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          containers:
-          - name: jenkins-agent
-            image: bitnami/jenkins-agent:latest
-            command:
-            tty: true
-        '''
+        kubernetes {
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                containers:
+                - name: jenkins-agent
+                    image: bitnami/jenkins-agent:latest
+                    tty: true
+                '''
         }
     }
     options {
@@ -30,7 +29,6 @@ pipeline {
         stage('Preparation') {
             steps {
                 cleanWs()
-                checkout scm
             }
         }
 
@@ -46,8 +44,6 @@ pipeline {
                         usernameVariable: 'user'
                     ),
                 ]) {
-                   // sh 'pwd'
-                  //  sh 'ls -la'
                     sh 'minikube start'
                     sh 'eval $(minikube -p minikube docker-env)'
                     sh """
@@ -60,8 +56,7 @@ pipeline {
             }
         }
 
-
-         stage('push') {
+        stage('Push') {
             options {
                 timeout(time: 10, unit: 'MINUTES')
             }
@@ -73,8 +68,6 @@ pipeline {
                         usernameVariable: 'dockerUser'
                     ),
                 ]) {
-
-
                     sh """
                         docker push kubealon/alon-bot-python:${env.BUILD_NUMBER}
                     """
@@ -103,12 +96,11 @@ pipeline {
     }
 
     post {
-    always {
-        node {
-            sh 'docker system prune -af'
-            sh 'minikube stop'
+        always {
+            node {
+                sh 'docker system prune -af'
+                sh 'minikube stop'
+            }
         }
     }
 }
-
-        }
