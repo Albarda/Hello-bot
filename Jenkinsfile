@@ -8,14 +8,6 @@ pipeline {
           containers:
           - name: jenkins-agent
             image: bitnami/jenkins-agent:latest
-            env:
-              - name: JENKINS_URL
-                value: "http://54.195.163.130:8080/"
-              - name: JENKINS_SECRET
-                valueFrom:
-                  secretKeyRef:
-                    name: jenkins-agent
-                    key: secret
             tty: true
         '''
         }
