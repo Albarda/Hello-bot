@@ -27,12 +27,6 @@ pipeline {
             }
         }
 
-        stage('Preparation') {
-            steps {
-                cleanWs()
-                checkout scm
-            }
-        }
 
         stage('Build') {
             options {
