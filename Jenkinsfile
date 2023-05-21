@@ -7,7 +7,7 @@ pipeline {
         spec:
           containers:
           - name: jenkins-agent
-            image: bitnami/jenkins-agent:latest
+            image: s4sdk/jenkins-agent-k8s
             namespace: jenkins
             tty: true
             command:
