@@ -7,11 +7,17 @@ pipeline {
         spec:
           containers:
           - name: jenkins-agent
-            value: "http://54.195.163.130:8080/"
             image: bitnami/jenkins-agent:latest
+          - name: JENKINS_URL
+          env:
+            value: "http://54.195.163.130:8080/"
+            - name: JENKINS_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: jenkins-agent
+                key: secret
             command:
-            - cat
-            tty: true
+              tty: true
         '''
         }
     }
