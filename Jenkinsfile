@@ -45,6 +45,11 @@ pipeline {
                 checkout scm
             }
         }
+
+        environment {
+    PATH = "$PATH:/home/jenkins/bin"
+        }
+
         stage('Install kubectl') {
   steps {
     script {
