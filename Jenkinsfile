@@ -44,7 +44,7 @@ pipeline {
                         usernameVariable: 'user'
                     ),
                 ]) {
-                    sh 'minikube start'
+                   // sh 'minikube start'
                     sh 'eval $(minikube -p minikube docker-env)'
                     sh """
                         docker build -f Dockerfile -t kubealon/alon-bot-python:${env.BUILD_NUMBER} .
@@ -98,7 +98,7 @@ pipeline {
     post {
         always {
             sh 'docker system prune -af'
-            sh 'minikube stop'
+         //   sh 'minikube stop'
         }
     }
 }
