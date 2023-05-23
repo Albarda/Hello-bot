@@ -38,6 +38,9 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
     }
+            environment {
+    PATH = "$PATH:/home/jenkins/bin"
+        }
 
     stages {
         stage('Checkout') {
@@ -46,9 +49,7 @@ pipeline {
             }
         }
 
-        environment {
-    PATH = "$PATH:/home/jenkins/bin"
-        }
+
 
         stage('Install kubectl') {
   steps {
