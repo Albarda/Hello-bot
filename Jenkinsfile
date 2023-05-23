@@ -54,7 +54,7 @@ pipeline {
         mkdir -p ~/bin
         mv ./kubectl ~/bin/
         echo 'export PATH=$PATH:~/bin' >> ~/.bashrc
-        source ~/.bashrc
+        . /home/jenkins/.bashrc
       '''
     }
   }
