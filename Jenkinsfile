@@ -1,3 +1,5 @@
+podTemplate(serviceAccount: 'jenkins') {
+    node(POD_LABEL) {
 pipeline {
     agent {
     kubernetes {
@@ -87,4 +89,6 @@ pipeline {
     }
 
 
+}
+}
 }
