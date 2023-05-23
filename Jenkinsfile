@@ -4,13 +4,22 @@ pipeline {
       yaml '''
         apiVersion: v1
         kind: Pod
+        metadata:
+          labels:
+            jenkins: "slave"
         spec:
           containers:
-          - name: jnlp
+          - name: jenkins-agent
             image: kubealon/jenkins-docker:1.6
+            command:
+            - "/bin/sh"
+            args:
+            - "-c"
+            - "while true; do echo 'jenkins-agent running...'; sleep 30; done"
             env:
             - name: KUBECONFIG
               value: /home/jenkins/.kube/config
+            tty: true
           volumes:
           - name: kubeconfig
             secret:
