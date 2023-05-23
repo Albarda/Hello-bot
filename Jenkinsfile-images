@@ -47,6 +47,9 @@ pipeline {
                     ),
                 ]) {
                     sh """
+                        sh "docker login -u ${dockerUser} -p ${dockerPass}
+                        """
+                    sh """
                         docker push kubealon/alon-bot-python:${env.BUILD_NUMBER}
                     """
                     sh """
