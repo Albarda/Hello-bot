@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(true)
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                node {
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Build') {
+            options {
+                timeout(time: 10, unit: 'MINUTES')
+            }
+            steps {
+                        sh """
+                            docker build -f Dockerfile -t kubealon/alon-bot-python:${env.BUILD_NUMBER} .
+                        """
+                        sh """
+                            docker build -f Dockerfile-nginx -t kubealon/alon-bot-nginx:${env.BUILD_NUMBER} .
+                        """
+                    }
+                }
+
+        stage('push') {
+            options {
+                timeout(time: 10, unit: 'MINUTES')
+            }
+            steps {
+                node {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'dockerhub-cred',
+                            passwordVariable: 'dockerPass',
+                            usernameVariable: 'dockerUser'
+                        ),
+                    ]) {
+                        sh """
+                            docker push kubealon/alon-bot-python:${env.BUILD_NUMBER}
+                        """
+                        sh """
+                            docker push kubealon/alon-bot-nginx:${env.BUILD_NUMBER}
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            node {
+                sh 'docker system prune -af'
+            }
+        }
+    }
+}

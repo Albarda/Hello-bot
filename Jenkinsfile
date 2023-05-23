@@ -32,51 +32,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            options {
-                timeout(time: 10, unit: 'MINUTES')
-            }
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'Github-cred',
-                        passwordVariable: 'pass',
-                        usernameVariable: 'user'
-                    ),
-                ]) {
-                   // sh 'minikube start'
-                  //  sh 'eval $(minikube -p minikube docker-env)'
-                    sh """
-                        docker build -f Dockerfile -t kubealon/alon-bot-python:${env.BUILD_NUMBER} .
-                    """
-                    sh """
-                        docker build -f Dockerfile-nginx -t kubealon/alon-bot-nginx:${env.BUILD_NUMBER} .
-                    """
-                }
-            }
-        }
 
-        stage('push') {
-            options {
-                timeout(time: 10, unit: 'MINUTES')
-            }
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub-cred',
-                        passwordVariable: 'dockerPass',
-                        usernameVariable: 'dockerUser'
-                    ),
-                ]) {
-                    sh """
-                        docker push kubealon/alon-bot-python:${env.BUILD_NUMBER}
-                    """
-                    sh """
-                        docker push kubealon/alon-bot-nginx:${env.BUILD_NUMBER}
-                    """
-                }
-            }
-        }
 
         stage('Deploy to Minikube') {
             steps {
@@ -95,10 +51,5 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            sh 'docker system prune -af'
-         //   sh 'minikube stop'
-        }
-    }
+
 }
