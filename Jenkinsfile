@@ -37,7 +37,7 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    sh 'kubectl config use-context minikube'
+                   // sh 'kubectl config use-context minikube'
                     sh 'kubectl apply -f alon-bot-python-deployment.yaml'
                     sh 'kubectl apply -f alon-bot-python-service.yaml'
                     sh 'kubectl apply -f alon-bot-python-hpa.yaml'
