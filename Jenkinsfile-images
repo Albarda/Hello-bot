@@ -46,9 +46,11 @@ pipeline {
                         usernameVariable: 'dockerUser'
                     ),
                 ]) {
-                    sh """
-                        sh "docker login -u ${dockerUser} -p ${dockerPass}
-                        """
+                    sh '''
+                            set +x
+                            echo "${dockerPass}" | docker login -u "${dockerUser}" --password-stdin
+                            set -x
+                        '''
                     sh """
                         docker push kubealon/alon-bot-python:${env.BUILD_NUMBER}
                     """
