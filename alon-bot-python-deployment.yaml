@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: alon-bot-python
-        image: kubealon/alon-bot-python:latest
+        image: kubealon/alon-bot-python:14
         resources:
           requests:
             cpu: 100m
