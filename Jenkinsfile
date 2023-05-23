@@ -6,15 +6,20 @@ pipeline {
         kind: Pod
         spec:
           containers:
-          - name: jenkins-agent
+          - name: jnlp
             image: kubealon/jenkins-docker:1.6
-            namespace: jenkins
-            tty: true
-            command:
-            - "/bin/sh"
-            args:
-            - "-c"
-            - "while true; do echo 'jenkins-agent running...'; sleep 30; done"
+            env:
+            - name: KUBECONFIG
+              value: /home/jenkins/.kube/config
+          volumes:
+          - name: kubeconfig
+            secret:
+              secretName: my-kubeconfig
+          volumeMounts:
+          - name: kubeconfig
+            mountPath: /home/jenkins/.kube/config
+            readOnly: true
+            subPath: config
         '''
         }
     }
