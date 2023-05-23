@@ -73,7 +73,7 @@ pipeline {
             steps {
                 script {
                    // sh 'kubectl config use-context minikube'
-                    sh 'kubectl apply -f alon-bot-python-deployment.yaml -n default'
+                    sh 'kubectl apply -f alon-bot-python-deployment.yaml'
                     sh 'kubectl apply -f alon-bot-python-service.yaml'
                     sh 'kubectl apply -f alon-bot-python-hpa.yaml'
                     sh 'kubectl apply -f alon-bot-release-pvc.yaml'
