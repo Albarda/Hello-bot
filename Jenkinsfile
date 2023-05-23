@@ -1,4 +1,3 @@
-
 pipeline {
     agent {
     kubernetes {
@@ -44,8 +43,6 @@ pipeline {
         }
 
     stages {
-    podTemplate(serviceAccount: 'jenkins') {
-    node(jenkins: "slave") {
         stage('Checkout') {
             steps {
                 checkout scm
@@ -90,6 +87,4 @@ pipeline {
     }
 
 
-}
-}
 }
