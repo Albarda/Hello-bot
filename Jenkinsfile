@@ -7,7 +7,7 @@ pipeline {
         spec:
           containers:
           - name: jenkins-agent
-            image: kubealon/jenkins-docker:1.2
+            image: kubealon/jenkins-docker:1.3
             namespace: jenkins
             tty: true
             command:
