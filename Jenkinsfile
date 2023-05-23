@@ -45,7 +45,7 @@ pipeline {
                     ),
                 ]) {
                    // sh 'minikube start'
-                    sh 'eval $(minikube -p minikube docker-env)'
+                  //  sh 'eval $(minikube -p minikube docker-env)'
                     sh """
                         docker build -f Dockerfile -t kubealon/alon-bot-python:${env.BUILD_NUMBER} .
                     """
