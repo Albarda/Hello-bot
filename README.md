@@ -2,7 +2,7 @@
 1. Start the ec2 machine
 2. Connect to the ec2 machine
 3. Type 'minikube start'
-4. On another browser tab connect to jenkins via <ec2-publik-ip>:8080
+4. On another browser tab connect to jenkins via <ec2-Public IPv4>:8080
 5. From jenkins gui (section 4) run 'alon-bot-images' to build and push the images
 6. Run 'alon-bot-deploy' to deploy all pods and services
 7. Connect to the ec2 machine in another connection
