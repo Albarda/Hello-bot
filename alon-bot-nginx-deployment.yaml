@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: kubealon/alon-bot-nginx
+        image: kubealon/alon-bot-nginx:latest
         ports:
         - containerPort: 80

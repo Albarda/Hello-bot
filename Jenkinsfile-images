@@ -26,10 +26,10 @@ pipeline {
             }
             steps {
                 sh """
-                   DOCKER_BUILDKIT=0 docker build -f Dockerfile -t kubealon/alon-bot-python:${env.BUILD_NUMBER} .
+                   DOCKER_BUILDKIT=0 docker build -f Dockerfile -t kubealon/alon-bot-python:${env.BUILD_NUMBER}:latest .
                 """
                 sh """
-                   DOCKER_BUILDKIT=0 docker build -f Dockerfile-nginx -t kubealon/alon-bot-nginx:${env.BUILD_NUMBER} .
+                   DOCKER_BUILDKIT=0 docker build -f Dockerfile-nginx -t kubealon/alon-bot-nginx:${env.BUILD_NUMBER}:latest .
                 """
             }
         }
